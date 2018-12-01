@@ -19,6 +19,6 @@ int main() {
 	imshow("inputImage", inputImage);
 	imshow("outputImage", outputImage);
 	cv::waitKey(0);
-
+	sss
 	return 0;
 }
