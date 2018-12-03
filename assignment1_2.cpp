@@ -10,7 +10,7 @@ int main() {
 	cv::Mat face = cv::imread("samples/face.png");
 
 	cv::Mat src_hsv, face_hsv;
-	cvtColor(input, src_hsv, cv::COLOR_BGR2HSV);
+	cvtColor(input, src_hsv, cv::COLOR_BGR2HSV);	//  BGR > HSV ·Î º¯È¯
 	cvtColor(face, face_hsv, cv::COLOR_BGR2HSV);
 
 	cv::Mat output;

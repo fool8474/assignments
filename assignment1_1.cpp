@@ -1,4 +1,3 @@
-/* Assignment #1 */
 
 #include <iostream>
 #include "opencv2/core/core.hpp"
@@ -29,7 +28,7 @@ int main() {
 	IPCVL::UTIL::GetHistogramImage(inputHistogram, inputHistImage, hist_w, hist_h);
 	IPCVL::UTIL::GetHistogramImage(outputHhistogram, outputHistImage, hist_w, hist_h);
 
-	// display
+
 	cv::imshow("inputImage", inputImage);
 	cv::imshow("outputImage", outputImage);
 	cv::imshow("inputImage Histogram", inputHistImage);
