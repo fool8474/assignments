@@ -8,6 +8,7 @@ namespace IPCVL {
 			for (int y = 0; y < inputMat.rows; y++) {
 				for (int x = 0; x < inputMat.cols; x++) {
 					// Todo : histogram을 쌓습니다. 
+					histogram[inputMat.at<uchar>(x, y)]++;
 
 					/** your code here! **/
 
@@ -30,10 +31,19 @@ namespace IPCVL {
 			calcHist_hs(srcMat, input_hist);
 			calcHist_hs(faceMat, model_hist);
 
+			cv::Mat hsv = src_hsv.getMat();
+			std::vector<cv::Mat> channels;
+			split(hsv, channels);
+			cv::Mat mat_h = channels[0];
+			cv::Mat mat_s = channels[1];
+
 			for (int y = 0; y < srcMat.rows; y++) {
 				for (int x = 0; x < srcMat.cols; x++) {
 					// Todo : 양자화된 h,s 값을 얻고 histogram에 값을 더합니다. 
-
+					int h_value = UTIL::quantize(mat_h.at<uchar>(y, x));
+					int s_value = UTIL::quantize(mat_s.at<uchar>(y, x));
+					
+					outputProb.at<double>(y, x) = UTIL::h_r(model_hist, input_hist, h_value, s_value);
 					/** your code here! **/
 
 					// hint 1 : UTIL::quantize()를 이용해서 srtMat의 값을 양자화합니다. 
@@ -55,7 +65,9 @@ namespace IPCVL {
 					// Todo : 양자화된 h,s 값을 얻고 histogram에 값을 더합니다. 
 
 					/** your code here! **/
-
+					int h_value = UTIL::quantize(mat_h.at<uchar>(y, x));
+					int s_value = UTIL::quantize(mat_s.at<uchar>(y, x));
+					histogram[h_value][s_value] ++;
 					// hint 1 : 양자화 시 UTIL::quantize() 함수를 이용해서 mat_h, mat_s의 값을 양자화시킵니다. 
 				}
 			}
@@ -64,6 +76,8 @@ namespace IPCVL {
 			for (int j = 0; j < 64; j++) {
 				for (int i = 0; i < 64; i++) {
 					// Todo : histogram에 있는 값들을 순회하며 (hsv.rows * hsv.cols)으로 정규화합니다. 
+					histogram[j][i] /= (hsv.rows * hsv.cols);
+
 					/** your code here! **/
 				}
 			}
