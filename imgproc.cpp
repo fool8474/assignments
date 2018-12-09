@@ -69,6 +69,86 @@ namespace IPCVL {
 				}
 			}
 		}
+
+		void thresh_binary(cv::InputArray src, cv::OutputArray dst, const int& threshold) {
+			cv::Mat srcMat = src.getMat();
+			dst.create(srcMat.size(), CV_8UC1);
+			cv::Mat outputMat = dst.getMat();
+
+			for (int y = 0; y < srcMat.rows; y++) {
+				for (int x = 0; x < srcMat.cols; x++) {
+
+					if (srcMat.at<uchar>(y, x) < threshold) {
+						outputMat.at<uchar>(y, x) = 0;
+					}
+					else {
+						outputMat.at<uchar>(y, x) = 255;
+					}
+				}
+			}
+		}
+
+		void thresh_otsu(cv::InputArray src, cv::OutputArray dst) {
+
+			cv::Mat srcMat = src.getMat();
+			dst.create(srcMat.size(), CV_8UC1);
+			cv::Mat outputMat = dst.getMat();
+			outputMat.setTo(cv::Scalar(0.));
+
+			double histogramNormalized[256] = { 0, };
+			UTIL::calcNormedHist(src, histogramNormalized);
+
+			double w[256]       = { 0, }, 
+				  u0[256]       = { 0, }, 
+				  u1[256]       = { 0, }, 
+				  vBetween[256] = { 0, };
+
+			double    u = 0.0, 
+				 curMax = 0.0;
+			int threshold = 0;
+
+			for (int t = 0; t < 256; t++) {
+				u += (t*histogramNormalized[t]);
+			}
+
+			w[0] = histogramNormalized[0];
+			u0[0] = 0.0;
+
+			for (int t = 1; t < 256; t++) {
+
+				w[t] = w[t - 1] + histogramNormalized[t];
+
+				if (w[t] == 0 || (1 - w[t]) == 0)
+					continue;
+
+				u0[t] = (w[t - 1] * u0[t - 1] + t * histogramNormalized[t]) / w[t];
+				u1[t] = (u - w[t] * u0[t]) / (1 - w[t]);
+				vBetween[t] = w[t] * (1 - w[t]) * (pow(u0[t] - u1[t], 2));
+				
+				if (vBetween[t] > curMax) {
+					curMax = vBetween[t];
+					threshold = t;
+				}
+			}
+
+			thresh_binary(srcMat, outputMat, threshold);
+		}
+
+		void flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) {
+
+		}
+		void flood_fill8(cv::Mat& l, const int& j, const int& i, const int& label) {
+
+		}
+		void efficient_flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) {
+
+		}
+		void flood_fill(cv::InputArray src, cv::OutputArray dst, const UTIL::CONNECTIVITIES& direction) {
+
+		}
+
 	}  // namespace IMG_PROC
+
+
 }
 
