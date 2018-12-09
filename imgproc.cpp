@@ -134,21 +134,82 @@ namespace IPCVL {
 			thresh_binary(srcMat, outputMat, threshold);
 		}
 
+		
 		void flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) {
-
+			if (l.at<int>(j, i) == -1) {
+				l.at<int>(j, i) = label;
+				flood_fill4(l, j, i + 1, label);
+				flood_fill4(l, j - 1, i, label);
+				flood_fill4(l, j, i - 1, label);
+				flood_fill4(l, j + 1, i, label);
+			}
 		}
-		void flood_fill8(cv::Mat& l, const int& j, const int& i, const int& label) {
 
+		void flood_fill8(cv::Mat& l, const int& j, const int& i, const int& label) {
+			if (l.at<int>(j, i) == -1) {
+				l.at<int>(j, i) = label;
+
+				flood_fill8(l, j, i + 1, label);
+				flood_fill8(l, j - 1, i, label);
+				flood_fill8(l, j, i - 1, label);
+				flood_fill8(l, j + 1, i, label);
+				flood_fill8(l, j - 1, i + 1, label);
+				flood_fill8(l, j - 1, i - 1, label);
+				flood_fill8(l, j + 1, i - 1, label);
+				flood_fill8(l, j + 1, i + 1, label);
+			}
 		}
 		void efficient_flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) {
 
 		}
 		void flood_fill(cv::InputArray src, cv::OutputArray dst, const UTIL::CONNECTIVITIES& direction) {
 
+			cv::Mat srcMat = src.getMat();
+			dst.create(srcMat.size(), CV_32SC1);
+			cv::Mat outputMat = dst.getMat();
+			outputMat.setTo(cv::Scalar(0.));
+
+			for (int j = 0; j < srcMat.rows; j++) {
+				for (int i = 0; i < srcMat.cols; i++) {
+					if (j == 0 || j == srcMat.rows - 1 || i == 0 || i == srcMat.cols - 1) {
+						outputMat.at<int>(j, i) = 0;
+					}
+					else if (srcMat.at<uchar>(j,i) != 0) {
+						outputMat.at<int>(j, i) = -1;
+					}
+					else {
+						outputMat.at<int>(j, i) = 0;
+					}
+				}
+			}
+
+			int label = 1;
+
+			for (int j = 1; j < srcMat.rows - 1; j++) {
+				for (int i = 1; i < srcMat.cols - 1; i++) {
+					if (outputMat.at<int>(j, i) == -1) {
+						//printf("%d,%d\n", j, i);
+						switch (direction) {
+						case UTIL::CONNECTIVITIES::EFFICIENT_FOURWAY:
+							efficient_flood_fill4(outputMat, j, i, label);
+							label++;
+							break;
+
+						case UTIL::CONNECTIVITIES::NAIVE_EIGHT_WAY:
+							flood_fill8(outputMat, j, i, label);
+							label++;
+							break;
+
+						case UTIL::CONNECTIVITIES::NAIVE_FOURWAY:
+							flood_fill4(outputMat, j, i, label);
+							label++;
+							break;
+						}
+					}
+				}
+			}
 		}
 
 	}  // namespace IMG_PROC
-
-
 }
 
