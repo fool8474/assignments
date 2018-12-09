@@ -6,7 +6,7 @@ namespace IPCVL {
 			int L = 256;
 			int q = 64;
 			return floor((a * q) / L);
-		}
+		} // 1/4 양자화
 
 		double h_r(double model_hist[][64], double input_hist[][64], int j, int i) {
 			double h_m = model_hist[j][i];
@@ -14,7 +14,7 @@ namespace IPCVL {
 			double val = 0.0;
 
 			if (h_i == 0.0) return 1.0;
-			else return (double)std::min(h_m / h_i, 1.0);
+			else return (double)std::min(h_m / h_i, 1.0); //식2.4
 		}
 
 		void GetHistogramImage(int* histogram, cv::OutputArray dst, int hist_w, int hist_h) {

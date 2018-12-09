@@ -36,9 +36,6 @@
     <ClCompile Include="assignment1_1.cpp">
       <Filter>assignment1</Filter>
     </ClCompile>
-    <ClCompile Include="assignment1_2.cpp">
-      <Filter>assignment1</Filter>
-    </ClCompile>
     <ClCompile Include="assignment2_0.cpp">
       <Filter>assignment2</Filter>
     </ClCompile>
@@ -47,6 +44,9 @@
     </ClCompile>
     <ClCompile Include="assignment2_2.cpp">
       <Filter>assignment2</Filter>
+    </ClCompile>
+    <ClCompile Include="assignment1_2.cpp">
+      <Filter>assignment1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

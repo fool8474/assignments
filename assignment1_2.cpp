@@ -11,7 +11,7 @@
 int main() {
 	cv::Mat input = cv::imread("samples/lena.bmp");
 	cv::Mat face = cv::imread("samples/face.png");
-	cv::Mat test = cv::imread("samples/1.jpg");
+	cv::Mat test = cv::imread("samples/lena.bmp");
 
 	cv::Mat src_hsv, face_hsv;
 	cvtColor(test, src_hsv, cv::COLOR_BGR2HSV);
