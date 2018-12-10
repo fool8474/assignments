@@ -44,6 +44,6 @@ int main() {
 	cv::imshow("small image naive 8-way", result_naive_8);
 	cv::imshow("big image efficient 4-way", result_efficient_4);
 	cv::waitKey();
-
+	
 	return 0;
 }

@@ -159,9 +159,37 @@ namespace IPCVL {
 				flood_fill8(l, j + 1, i + 1, label);
 			}
 		}
-		void efficient_flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) {
 
+		void efficient_flood_fill4(cv::Mat& l, const int& j, const int& i, const int& label) { // 효율적인 4방향 flood
+			typedef std::tuple<int,int> Point; // x,y를 가리킬 tuple
+			std::queue<Point> que;
+			Point firstPoint = std::make_tuple(j,i);
+			que.push(firstPoint);
+
+			while (!que.empty()) {
+				
+				Point curPoint = que.front();
+				que.pop();
+				int y = std::get<0>(curPoint);
+				int x = std::get<1>(curPoint);
+				if (l.at<int>(y,x) == -1) {
+
+					int left = x;
+					int right = x;
+
+					while (l.at<int>(y, left - 1) == -1) left--;
+					while (l.at<int>(y, right + 1) == -1) right++; //미처리 상태인 열을 찾는다.
+
+					for (int c = left; c <= right; c++) { //미처리 열을 쭉 둘러보며
+						l.at<int>(y, c) = label;
+
+						if (l.at<int>(y - 1, c) == -1 && (c == left || l.at<int>(y - 1, c - 1) != -1)) que.push((Point)std::make_tuple(y - 1, c));
+						if (l.at<int>(y + 1, c) == -1 && (c == left || l.at<int>(y + 1, c - 1) != -1)) que.push((Point)std::make_tuple(y + 1, c)); //행의 범위를 늘려준다.
+					}
+				}
+			}
 		}
+
 		void flood_fill(cv::InputArray src, cv::OutputArray dst, const UTIL::CONNECTIVITIES& direction) {
 
 			cv::Mat srcMat = src.getMat();
